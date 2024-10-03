@@ -1,9 +1,9 @@
 import React from 'react'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import LandingPage from './component/landingpage'
-import BackgroundRemover from './component/remover'
+import BackgroundRemover from './component/remover';
 
-export default function App() {
+function App() {
   return (
     <Router>
       <Routes>
@@ -11,5 +11,7 @@ export default function App() {
         <Route path="/remove-background" element={<BackgroundRemover />} />
       </Routes>
     </Router>
-  )
+  );
 }
+
+export default App;

@@ -8,7 +8,8 @@ export default function BackgroundRemover() {
   const [loading, setLoading] = useState(false)
 
   // Add this line near the top of the component
-  const API_KEY = process.env.NEXT_PUBLIC_REMOVE_BG_API_KEY
+  const API_KEY = import.meta.env.VITE_REMOVE_BG_API_KEY;
+
 
   const handleImageUpload = (event) => {
     const file = event.target.files?.[0]
