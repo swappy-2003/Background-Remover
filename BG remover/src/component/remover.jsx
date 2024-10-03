@@ -7,6 +7,9 @@ export default function BackgroundRemover() {
   const [processedImage, setProcessedImage] = useState(null)
   const [loading, setLoading] = useState(false)
 
+  // Add this line near the top of the component
+  const API_KEY = process.env.NEXT_PUBLIC_REMOVE_BG_API_KEY
+
   const handleImageUpload = (event) => {
     const file = event.target.files?.[0]
     if (file) {
@@ -22,11 +25,10 @@ export default function BackgroundRemover() {
     formData.append('image_file', image)
 
     try {
-      // Note: Replace 'YOUR_API_KEY' with an actual API key from remove.bg
       const response = await fetch('https://api.remove.bg/v1.0/removebg', {
         method: 'POST',
         headers: {
-          'X-Api-Key': 'tTrFnYRy7NftY9ynfnCjQWgB',
+          'X-Api-Key': API_KEY, // Use the environment variable here
         },
         body: formData,
       })
