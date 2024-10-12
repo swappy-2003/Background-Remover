@@ -7,7 +7,7 @@ export default function BackgroundRemover() {
   const [processedImage, setProcessedImage] = useState(null)
   const [loading, setLoading] = useState(false)
 
-  // Add this line near the top of the component
+  // Use process.env for Next.js or import.meta.env for Vite
   const API_KEY = import.meta.env.VITE_REMOVE_BG_API_KEY;
 
 
@@ -29,7 +29,7 @@ export default function BackgroundRemover() {
       const response = await fetch('https://api.remove.bg/v1.0/removebg', {
         method: 'POST',
         headers: {
-          'X-Api-Key': API_KEY, // Use the environment variable here
+          'X-Api-Key': API_KEY,
         },
         body: formData,
       })
@@ -47,8 +47,27 @@ export default function BackgroundRemover() {
     }
   }
 
+  const handleDownload = async () => {
+    if (processedImage) {
+      try {
+        const response = await fetch(processedImage);
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = 'processed_image.png';
+        document.body.appendChild(link);
+        link.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(link);
+      } catch (error) {
+        console.error('Download failed:', error);
+      }
+    }
+  };
+
   return (
-    <div className="w-full max-w-md mx-auto bg-white shadow-xl rounded-lg overflow-hidden  mt-40">
+    <div className="w-full max-w-md mx-auto bg-white shadow-xl rounded-lg overflow-hidden mt-40">
       <div className="bg-gradient-to-r from-purple-500 to-pink-500 text-white p-6">
         <h2 className="text-2xl font-bold">Background Remover</h2>
       </div>
@@ -93,12 +112,20 @@ export default function BackgroundRemover() {
         <button
           onClick={removeBackground}
           disabled={!image || loading}
-          className="w-full py-2 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg shadow-md hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full py-2 px-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-semibold rounded-lg shadow-md hover:from-purple-600 hover:to-pink-600 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed mb-4"
         >
           {loading ? 'Processing...' : 'Remove Background'}
         </button>
+        
+        {processedImage && (
+          <button
+            onClick={handleDownload}
+            className="w-full py-2 px-4 bg-gradient-to-r from-green-500 to-blue-500 text-white font-semibold rounded-lg shadow-md hover:from-green-600 hover:to-blue-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50 transition-colors"
+          >
+            Download Processed Image
+          </button>
+        )}
       </div>
-      
     </div>
   )
 }
